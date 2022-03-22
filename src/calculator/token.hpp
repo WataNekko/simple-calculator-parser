@@ -21,16 +21,8 @@ namespace Calc {
         TokenType type;
         std::string_view value;
 
-        Token(TokenType type, const std::string_view &value)
-            : type(type), value(value) {}
-
-        friend std::ostream &operator<<(std::ostream &os, const Token &token)
-        {
-            os << "{ \"type\": \"" << static_cast<char>(token.type) << "\", \"value\": \"" << token.value << "\" }";
-            return os;
-        }
+        Token(TokenType type, const std::string_view &value);
+        friend std::ostream &operator<<(std::ostream &os, const Token &token);
     };
 
 } // namespace Calc
-
-}

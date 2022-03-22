@@ -8,15 +8,6 @@ namespace Calc {
     using BinOp = AbstractSyntaxTree::BinOp;
     using UnOp = AbstractSyntaxTree::UnOp;
 
-    //============== AST ==============//
-
-    std::ostream &operator<<(std::ostream &os, const AbstractSyntaxTree &ast)
-    {
-        return os << "{\n"
-                  << "  \"root\": " << FormatNode(ast.root_, 1)
-                  << "\n}";
-    }
-
     //============== FormatNode ==============//
 
     FormatNode::FormatNode(const std::unique_ptr<Node> &node, const unsigned int indent_level)
@@ -40,9 +31,8 @@ namespace Calc {
     std::ostream &operator<<(std::ostream &os, const Node::FormattedLF &lf)
     {
         os << '\n';
-        if (lf.indent_level > 0) {
-            os.width(2 * lf.indent_level);
-            os << ' ';
+        for (unsigned int i = 0; i < lf.indent_level; i++) {
+            os << "  ";
         }
         return os;
     }
@@ -90,6 +80,15 @@ namespace Calc {
                   << "  \"type\": \"u" << static_cast<char>(type) << "\"," << fmt.lf
                   << "  \"operand\": " << fmt(operand) << fmt.lf
                   << '}';
+    }
+
+    //============== AST ==============//
+
+    std::ostream &operator<<(std::ostream &os, const AbstractSyntaxTree &ast)
+    {
+        return os << "{\n"
+                  << "  \"root\": " << FormatNode(ast.root_, 1)
+                  << "\n}";
     }
 
 } // namespace Calc

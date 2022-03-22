@@ -5,16 +5,16 @@
 
 namespace Calc {
 
-    enum class TokenType {
-        Ignore,
-        NUMBER,
-        ADD,
-        SUB,
-        MULT,
-        DIV,
-        LPAREN,
-        RPAREN,
-        ANS
+    enum class TokenType : char {
+        Ignore = 0,
+        NUMBER = 'N',
+        ADD = '+',
+        SUB = '-',
+        MULT = '*',
+        DIV = '/',
+        LPAREN = '(',
+        RPAREN = ')',
+        ANS = '_'
     };
 
     struct Token {
@@ -26,7 +26,7 @@ namespace Calc {
 
         friend std::ostream &operator<<(std::ostream &os, const Token &token)
         {
-            os << "{ \"type\": " << static_cast<int>(token.type) << ", \"value\": \"" << token.value << "\" }";
+            os << "{ \"type\": \"" << static_cast<char>(token.type) << "\", \"value\": \"" << token.value << "\" }";
             return os;
         }
     };

@@ -31,4 +31,6 @@ namespace Calc {
         }
     };
 
+} // namespace Calc
+
 }

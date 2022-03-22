@@ -40,4 +40,4 @@ namespace Calc {
         throw "Error: Invalid syntax"; // no defined spec match
     }
 
-}
+} // namespace Calc

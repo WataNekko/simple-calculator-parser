@@ -9,6 +9,9 @@
 
 namespace Calc {
 
+    /**
+     * Tokenizer. Convert a sequence of characters into tokens.
+     */
     class Lexer {
     private:
         static const std::vector<std::pair<std::regex, TokenType>> tokenSpec;
@@ -20,4 +23,4 @@ namespace Calc {
         std::optional<Token> next();
     };
 
-}
+} // namespace Calc

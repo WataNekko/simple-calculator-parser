@@ -170,7 +170,7 @@ namespace Calc {
         auto expr = term();
 
         std::optional<Token> token;
-        while (token = lexer_.next()) {
+        while ((token = lexer_.next())) {
 
             switch (token->type) {
             case Token::PLUS:
@@ -195,7 +195,7 @@ namespace Calc {
         auto term = primary();
 
         std::optional<Token> token;
-        while (token = lexer_.next()) {
+        while ((token = lexer_.next())) {
 
             switch (token->type) {
             case Token::MULT:
@@ -252,7 +252,7 @@ namespace Calc {
             throw "SyntaxError: Expected primary expression";
         }
 
-        while (token = lexer_.next()) {
+        while ((token = lexer_.next())) {
 
             switch (token->type) {
             case Token::LPAREN:

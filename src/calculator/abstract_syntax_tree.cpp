@@ -160,8 +160,9 @@ namespace Calc {
     std::ostream &operator<<(std::ostream &os, const AbstractSyntaxTree &ast)
     {
         return os << "{\n"
-                  << "  \"root\": " << FormatNode(ast.root_, 1)
-                  << "\n}";
+                  << "  \"expr\": \"" << ast.expr_ << "\",\n"
+                  << "  \"root\": " << FormatNode(ast.root_, 1) << '\n'
+                  << '}';
     }
 
     std::unique_ptr<Node> AbstractSyntaxTree::expression()

@@ -40,30 +40,45 @@ namespace Calc {
         return os;
     }
 
+    //============== Node ==============//
+
+    double Node::evaluate(const std::unique_ptr<Node> &node, double ans)
+    {
+        if (!node) {
+            throw "TypeError: Cannot evaluate null node";
+        }
+        return node->evaluate(ans);
+    }
+
     //============== Number ==============//
 
     Number::Number(const std::string_view &value) : value(value) {}
 
-    inline double Number::evaluate() const
+    double Number::evaluate(double ans) const
     {
         return std::atof(value.data());
     }
 
     std::ostream &Number::toJson(std::ostream &os, const FormatNode &fmt) const
     {
-        return os << "{ \"value\": \"" << value << "\" }";
+        return os << '{' << fmt.lf
+                  << "  \"type\": \"number\"," << fmt.lf
+                  << "  \"value\": \"" << value << '\"' << fmt.lf
+                  << '}';
     }
 
     //============== Ans ==============//
 
-    inline double Ans::evaluate() const
+    double Ans::evaluate(double ans) const
     {
-        return 0;
+        return ans;
     }
 
     std::ostream &Ans::toJson(std::ostream &os, const FormatNode &fmt) const
     {
-        return os << "{ \"type\": \"ans\" }";
+        return os << '{' << fmt.lf
+                  << "  \"type\": \"ans\"" << fmt.lf
+                  << '}';
     }
 
     //============== BinOp ==============//
@@ -71,9 +86,23 @@ namespace Calc {
     BinOp::BinOp(BinOp::Type type, std::unique_ptr<Node> &&left, std::unique_ptr<Node> &&right)
         : type(type), left(std::move(left)), right(std::move(right)) {}
 
-    inline double BinOp::evaluate() const
+    double BinOp::evaluate(double ans) const
     {
-        return 0;
+        double a = Node::evaluate(left, ans);
+        double b = Node::evaluate(right, ans);
+
+        switch (type) {
+        case ADD:
+            return a + b;
+        case SUB:
+            return a - b;
+        case MULT:
+            return a * b;
+        case DIV:
+            return a / b;
+        default:
+            throw "TypeError: Unknown operator type";
+        }
     }
 
     std::ostream &BinOp::toJson(std::ostream &os, const FormatNode &fmt) const
@@ -90,9 +119,18 @@ namespace Calc {
     UnOp::UnOp(UnOp::Type type, std::unique_ptr<Node> &&operand)
         : type(type), operand(std::move(operand)) {}
 
-    inline double UnOp::evaluate() const
+    double UnOp::evaluate(double ans) const
     {
-        return 0;
+        double val = Node::evaluate(operand, ans);
+
+        switch (type) {
+        case UPLUS:
+            return val;
+        case UNEG:
+            return 0.0 - val; // instead of "return -val;" to avoid producing negative zero (-0.0)
+        default:
+            throw "TypeError: Unknown operator type";
+        }
     }
 
     std::ostream &UnOp::toJson(std::ostream &os, const FormatNode &fmt) const
@@ -105,13 +143,6 @@ namespace Calc {
 
     //============== AST ==============//
 
-    std::ostream &operator<<(std::ostream &os, const AbstractSyntaxTree &ast)
-    {
-        return os << "{\n"
-                  << "  \"root\": " << FormatNode(ast.root_, 1)
-                  << "\n}";
-    }
-
     AbstractSyntaxTree::AbstractSyntaxTree(std::string expr)
         : expr_(std::move(expr)), lexer_(expr_.c_str()), root_(expression())
     {
@@ -119,6 +150,18 @@ namespace Calc {
         if (token) {
             throw "SyntaxError: Unexpected token";
         }
+    }
+
+    double AbstractSyntaxTree::evaluate(double ans) const
+    {
+        return Node::evaluate(root_, ans);
+    }
+
+    std::ostream &operator<<(std::ostream &os, const AbstractSyntaxTree &ast)
+    {
+        return os << "{\n"
+                  << "  \"root\": " << FormatNode(ast.root_, 1)
+                  << "\n}";
     }
 
     std::unique_ptr<Node> AbstractSyntaxTree::expression()

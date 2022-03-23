@@ -2,26 +2,21 @@
 
 #include <string>
 
-#include <abstract_syntax_tree.hpp>
+#include "abstract_syntax_tree.hpp"
 
 namespace Calc {
 
     class SimpleCalculator {
     private:
-        double ans_;
+        double ans_ = 0.0;
 
     public:
-        static AbstractSyntaxTree parse(const std::string &str);
-
-        static double evaluate(const AbstractSyntaxTree &ast);
-
-        static double evaluate(const std::string &str);
+        static AbstractSyntaxTree parse(std::string expr);
 
         double evaluate(const AbstractSyntaxTree &ast);
+        double evaluate(std::string expr);
 
-        double evaluate(const std::string &str);
-
-        double ans();
+        inline double ans() { return ans_; }
     };
 
 }

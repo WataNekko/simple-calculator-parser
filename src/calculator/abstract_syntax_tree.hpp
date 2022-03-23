@@ -57,8 +57,10 @@ namespace Calc {
 
             }; // class FormatNode
 
-            virtual double evaluate() const = 0;
+            virtual double evaluate(double ans = 0.0) const = 0;
             virtual std::ostream &toJson(std::ostream &os, const FormatNode &fmt) const = 0;
+
+            static double evaluate(const std::unique_ptr<Node> &node, double ans = 0.0);
 
         }; // class Node
 
@@ -68,14 +70,14 @@ namespace Calc {
 
             Number(const std::string_view &value);
 
-            double evaluate() const;
+            double evaluate(double ans = 0.0) const;
             std::ostream &toJson(std::ostream &os, const FormatNode &fmt) const;
 
         }; // class Number
 
         class Ans : public Node {
         public:
-            double evaluate() const;
+            double evaluate(double ans = 0.0) const;
             std::ostream &toJson(std::ostream &os, const FormatNode &fmt) const;
         }; // class Ans
 
@@ -92,7 +94,7 @@ namespace Calc {
             std::unique_ptr<Node> left, right;
 
             BinOp(Type type, std::unique_ptr<Node> &&left, std::unique_ptr<Node> &&right);
-            double evaluate() const;
+            double evaluate(double ans = 0.0) const;
             std::ostream &toJson(std::ostream &os, const FormatNode &fmt) const;
 
         }; // class BinOp
@@ -108,14 +110,15 @@ namespace Calc {
             std::unique_ptr<Node> operand;
 
             UnOp(Type type, std::unique_ptr<Node> &&operand);
-            double evaluate() const;
+            double evaluate(double ans = 0.0) const;
             std::ostream &toJson(std::ostream &os, const FormatNode &fmt) const;
 
         }; // class UnOp
 
-        friend std::ostream &operator<<(std::ostream &os, const AbstractSyntaxTree &ast);
-
         AbstractSyntaxTree(std::string expr);
+
+        double evaluate(double ans = 0.0) const;
+        friend std::ostream &operator<<(std::ostream &os, const AbstractSyntaxTree &ast);
 
     private:
         std::string expr_;

@@ -5,23 +5,23 @@
 
 namespace Calc {
 
-    enum class TokenType : char {
-        Ignore = 0,
-        NUMBER = 'N',
-        ADD = '+',
-        SUB = '-',
-        MULT = '*',
-        DIV = '/',
-        LPAREN = '(',
-        RPAREN = ')',
-        ANS = '_'
-    };
-
     struct Token {
-        TokenType type;
+        enum Type : char {
+            Ignore = 0,
+            NUMBER = 'N',
+            PLUS = '+',
+            MINUS = '-',
+            MULT = '*',
+            DIV = '/',
+            LPAREN = '(',
+            RPAREN = ')',
+            ANS = '_'
+        };
+
+        Type type;
         std::string_view value;
 
-        Token(TokenType type, const std::string_view &value);
+        Token(Type type, const std::string_view &value);
         friend std::ostream &operator<<(std::ostream &os, const Token &token);
     };
 

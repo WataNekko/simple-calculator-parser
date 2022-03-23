@@ -2,7 +2,7 @@
 
 namespace Calc {
 
-    Token::Token(TokenType type, const std::string_view &value)
+    Token::Token(Token::Type type, const std::string_view &value)
         : type(type), value(value) {}
 
     std::ostream &operator<<(std::ostream &os, const Token &token)

@@ -2,16 +2,16 @@
 
 namespace Calc {
 
-    const std::vector<std::pair<std::regex, TokenType>> Lexer::tokenSpec = {
-        {std::regex(R"(\s+)"), TokenType::Ignore},
-        {std::regex(R"(\+)"), TokenType::ADD},
-        {std::regex(R"(-)"), TokenType::SUB},
-        {std::regex(R"(\*)"), TokenType::MULT},
-        {std::regex(R"(\/)"), TokenType::DIV},
-        {std::regex(R"(\()"), TokenType::LPAREN},
-        {std::regex(R"(\))"), TokenType::RPAREN},
-        {std::regex(R"(ans)"), TokenType::ANS},
-        {std::regex(R"(((\d*\.\d+)|(\d+\.?))([eE][-+]?\d+)?(?![eE\d\.]))"), TokenType::NUMBER}};
+    const std::vector<std::pair<std::regex, Token::Type>> Lexer::tokenSpec = {
+        {std::regex(R"(\s+)"), Token::Ignore},
+        {std::regex(R"(\+)"), Token::PLUS},
+        {std::regex(R"(-)"), Token::MINUS},
+        {std::regex(R"(\*)"), Token::MULT},
+        {std::regex(R"(\/)"), Token::DIV},
+        {std::regex(R"(\()"), Token::LPAREN},
+        {std::regex(R"(\))"), Token::RPAREN},
+        {std::regex(R"(ans)"), Token::ANS},
+        {std::regex(R"(((\d*\.\d+)|(\d+\.?))([eE][-+]?\d+)?(?![eE\d\.]))"), Token::NUMBER}};
 
     Lexer::Lexer(const char *cstr) : curr_ptr_(cstr) {}
 
@@ -26,7 +26,7 @@ namespace Calc {
             if (std::regex_search(curr_ptr_, match, re,
                                   std::regex_constants::match_continuous)) {
 
-                if (type == TokenType::Ignore) {
+                if (type == Token::Ignore) {
                     curr_ptr_ += match.length();
                     return next();
                 }

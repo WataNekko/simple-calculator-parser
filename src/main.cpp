@@ -1,17 +1,20 @@
 #include <iostream>
+#include <string>
 
 #include "calculator/abstract_syntax_tree.hpp"
 
 int main()
 {
-    Calc::AbstractSyntaxTree ast(
-        std::make_unique<Calc::AbstractSyntaxTree::UnOp>(
-            '-',
-            std::make_unique<Calc::AbstractSyntaxTree::UnOp>(
-                '-',
-                std::make_unique<Calc::AbstractSyntaxTree::BinOp>(
-                    '+',
-                    std::make_unique<Calc::AbstractSyntaxTree::BinOp>('-', nullptr, nullptr),
-                    std::make_unique<Calc::AbstractSyntaxTree::Number>(12)))));
-    std::cout << ast << '\n';
+    std::string expr;
+    while (std::getline(std::cin, expr)) {
+        try {
+            Calc::AbstractSyntaxTree ast(std::move(expr));
+            std::cout << ast << '\n'
+                      << std::endl;
+        }
+        catch (const char *ex) {
+            std::cout << ex << '\n'
+                      << std::endl;
+        }
+    }
 }

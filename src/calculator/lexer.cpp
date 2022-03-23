@@ -17,6 +17,13 @@ namespace Calc {
 
     std::optional<Token> Lexer::next()
     {
+        if (!buffer_.empty()) {
+            // available in buffer
+            Token token = buffer_.back();
+            buffer_.pop_back();
+            return token;
+        }
+
         if (*curr_ptr_ == '\0') {
             return {}; // end of string
         }
@@ -37,7 +44,12 @@ namespace Calc {
             }
         }
 
-        throw "Error: Invalid syntax"; // no defined spec match
+        throw "SyntaxError: Unrecognized token"; // no defined spec match
+    }
+
+    void Lexer::putback(const Token &token)
+    {
+        buffer_.push_back(token);
     }
 
 } // namespace Calc

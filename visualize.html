@@ -1,0 +1,69 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AST Visualization</title>
+  </head>
+
+  <body>
+    <input type="text" id="pathInput" placeholder="Enter file path..." />
+    <h2 id="error" style="color: red"></h2>
+    <canvas id="canvas"></canvas>
+  </body>
+
+  <script>
+    const pathInput = document.getElementById("pathInput");
+    const errorEl = document.getElementById("error");
+
+    // input file name
+    let url = "";
+
+    pathInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && url !== pathInput.value) {
+        url = pathInput.value;
+        lastMod = null;
+        errorEl.innerText = "";
+      }
+    });
+
+    // poll file for changes
+    let lastMod;
+
+    setInterval(async () => {
+      if (!url) return;
+
+      try {
+        const res = await fetch(url, { method: "HEAD" });
+
+        if (!res.ok) {
+          errorEl.innerText =
+            res.status === 404 ? "File not found" : "An error has occurred";
+          return;
+        }
+
+        const newLastMod = res.headers.get("Last-Modified");
+
+        if (lastMod !== newLastMod) {
+          lastMod = newLastMod;
+
+          const res = await fetch(url);
+          try {
+            const ast = await res.json();
+            errorEl.innerText = "";
+            drawAST(ast);
+          } catch (SyntaxError) {
+            errorEl.innerText = "Error: invalid JSON";
+          }
+        }
+      } catch {
+        errorEl.innerText = "An error has occurred";
+      }
+    }, 1000);
+
+    // draw the AST
+    function drawAST(ast) {
+      console.log(ast);
+    }
+  </script>
+</html>

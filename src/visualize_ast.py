@@ -1,10 +1,6 @@
 import argparse
 import json
 import os
-from turtle import color
-
-from matplotlib.pyplot import text
-from numpy import half
 
 
 # cli arguments parsing
@@ -44,7 +40,7 @@ def on_resize(_):
     if init:
         init = False
     else:
-        adjust_limits()
+        adjust_limits()  # adjust view to fit screen without being stretched
 
 
 fig.canvas.mpl_connect("resize_event", on_resize)
@@ -62,11 +58,11 @@ def poll_change(on_change):
         return
 
 
-## init mtime to None so that on_change is always called on the first poll
+## init mtime to None so that `on_change` is always called on the first poll
 poll_change.cached_mtime = None
 
 
-# spacing
+# tree spacing
 text_height = 14
 tree_lvl_spacing = 20
 tree_lvl_height = text_height + tree_lvl_spacing  # add spacing between each level
@@ -82,7 +78,7 @@ def update_frame():
             ast = json.load(f)
             draw_ast(ast)
     except (FileNotFoundError, json.decoder.JSONDecodeError, KeyError, TypeError):
-        draw_ast(None)
+        draw_ast(None)  # clear the plot and do nothing
 
 
 def draw_ast(ast):
@@ -93,6 +89,7 @@ def draw_ast(ast):
 
     global xmax, ymin
     _, xmax, ymin = draw_node(ast["root"], 0, 0)
+    # store xmax, ymin to later adjust limits
 
     plt.title(f'"{ast["expr"]}"')
     adjust_limits()
@@ -100,6 +97,7 @@ def draw_ast(ast):
 
 
 def adjust_limits():
+    """Adjust the limits to fit AST on screen"""
     global xmax, ymin
 
     w_fig, h_fig = fig.get_size_inches()

@@ -29,7 +29,7 @@ namespace Calc {
         }
 
         std::cmatch match;
-        for (auto [re, type] : tokenSpec) {
+        for (const auto &[re, type] : tokenSpec) {
             if (std::regex_search(curr_ptr_, match, re,
                                   std::regex_constants::match_continuous)) {
 
